@@ -526,7 +526,7 @@
     <header>
       <div class="logo">RAG <span>Assistant</span></div>
       <div class="header-right">
-        <span class="key-label">API Key:</span>
+        <!-- <span class="key-label">API Key:</span>
         <input
           class="key-input"
           id="api-key"
@@ -534,7 +534,8 @@
           placeholder="Paste your API_SECRET_KEY here"
         />
         <div class="status-dot" id="status-dot" title="Not tested"></div>
-        <button class="btn-sm" onclick="testConnection()">Test</button>
+        <button class="btn-sm" onclick="testConnection()">Test</button> -->
+        <div class="status-dot" id="status-dot" title="Checking..."></div>
       </div>
     </header>
 
@@ -660,8 +661,13 @@
       let pendingFiles = [];
       let isAsking = false;
 
+      // function getKey() {
+      //   return (document.getElementById("api-key").value || "").trim();
+      // }
+      const DEMO_API_KEY = "YKrMXJu7tvmxitY7t6FcTDS5YmTccT925Trk1yBHACA"; // hardcoded demo key for easier testing
+
       function getKey() {
-        return (document.getElementById("api-key").value || "").trim();
+        return DEMO_API_KEY;
       }
       function hdrs(json = true) {
         const h = { "X-API-Key": getKey() };
@@ -670,18 +676,22 @@
       }
 
       // ── STARTUP ───────────────────────────────────────────────────
+      // window.addEventListener("load", () => {
+      //   const saved = localStorage.getItem("rag_api_key");
+      //   if (saved) document.getElementById("api-key").value = saved;
+      //   document.getElementById("api-key").addEventListener("change", () => {
+      //     localStorage.setItem(
+      //       "rag_api_key",
+      //       document.getElementById("api-key").value,
+      //     );
+      //     renderUI();
+      //   });
+      //   document.getElementById("api-key").addEventListener("input", renderUI);
+      //   loadIngestedFiles();
+      // });
       window.addEventListener("load", () => {
-        const saved = localStorage.getItem("rag_api_key");
-        if (saved) document.getElementById("api-key").value = saved;
-        document.getElementById("api-key").addEventListener("change", () => {
-          localStorage.setItem(
-            "rag_api_key",
-            document.getElementById("api-key").value,
-          );
-          renderUI();
-        });
-        document.getElementById("api-key").addEventListener("input", renderUI);
-        loadIngestedFiles();
+        testConnection(); // auto check
+        loadIngestedFiles(); // load files
       });
 
       // ── CONNECTION TEST ───────────────────────────────────────────
@@ -708,7 +718,7 @@
 
       // ── LOAD INGESTED FILES FROM SERVER ──────────────────────────
       async function loadIngestedFiles() {
-        if (!getKey()) return;
+        // if (!getKey()) return;
         try {
           const r = await fetch(`${API}/ingest/sources`, { headers: hdrs() });
           if (!r.ok) return;
@@ -860,10 +870,10 @@
       }
 
       async function uploadFiles() {
-        if (!getKey()) {
-          toast("Enter your API key first", false);
-          return;
-        }
+        // if (!getKey()) {
+        //   toast("Enter your API key first", false);
+        //   return;
+        // }
         const btn = document.getElementById("upload-btn");
         btn.disabled = true;
         btn.textContent = "Uploading...";
@@ -968,10 +978,10 @@
         const inp = document.getElementById("query-input");
         const q = inp.value.trim();
         if (!q || isAsking) return;
-        if (!getKey()) {
-          toast("Enter your API key first", false);
-          return;
-        }
+        // if (!getKey()) {
+        //   toast("Enter your API key first", false);
+        //   return;
+        // }
 
         isAsking = true;
         document.getElementById("send-btn").disabled = true;
